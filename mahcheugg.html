@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Game - Robin's AI World</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.25rem; /* Adjust size as needed */
+      }
+
+      /* --- Tile Styling Updates --- */
+      .mahjong-tile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        /* Slightly larger tiles to accommodate bigger font */
+        width: 45px;
+        height: 65px;
+        background-color: var(--tile-bg);
+        border: 1px solid var(--tile-border);
+        border-radius: 4px;
+        margin: 2px;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        /* Increased font size for better readability */
+        font-size: 1.6rem; /* Significantly larger character */
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        color: var(--text-color);
+        padding: 2px; /* Adjust padding if needed */
+        line-height: 1; /* Ensure text is centered vertically */
+        overflow: hidden; /* Prevent character overflow */
+      }
+      .mahjong-tile-discarded {
+        /* Proportional increase */
+        width: 35px;
+        height: 50px;
+        font-size: 1.1rem; /* Larger discard character */
+        /* Inherit other styles like background, border, etc. */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--tile-bg);
+        border: 1px solid var(--tile-border);
+        border-radius: 4px;
+        margin: 1px; /* Slightly reduce margin for smaller tiles */
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+        font-weight: bold;
+        user-select: none;
+        color: var(--text-color);
+        padding: 1px;
+        line-height: 1;
+        overflow: hidden;
+      }
+      .mahjong-tile-hidden {
+         background-color: var(--tile-back-bg);
+         color: transparent;
+         /* Ensure hidden tiles match hand tile size */
+         width: 45px;
+         height: 65px;
+         display: inline-block; /* Use inline-block for hidden */
+         border: 1px solid var(--tile-border);
+         border-radius: 4px;
+         margin: 2px;
+         box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+      }
+      /* Style for the hint tile emoji (relative to surrounding text) */
+      .hint-tile-emoji {
+        font-size: 1.5em; /* Keep this relative size for emphasis */
+        vertical-align: middle;
+        margin: 0 0.1em;
+      }
+      /* --- End Tile Styling Updates --- */
+
+      /* Simple theme variables */
+      :root {
+        --bg-color: #f3f4f6; /* Light theme background */
+        --text-color: #1f2937;
+        --board-bg: #e5e7eb;
+        --tile-bg: #ffffff;
+        --tile-border: #d1d5db;
+        --tile-back-bg: #a0d9a0;
+        --discard-bg: #d1d5db;
+        --hint-ok-color: #16a34a; /* Green */
+        --hint-eval-color: #ea580c; /* Orange */
+      }
+      [data-theme="dark"] {
+        --bg-color: #1f2937;
+        --text-color: #f3f4f6;
+        --board-bg: #374151;
+        --tile-bg: #4b5563;
+        --tile-border: #6b7280;
+        --tile-back-bg: #3f613f;
+        --discard-bg: #4b5563;
+        --hint-ok-color: #4ade80; /* Lighter Green */
+        --hint-eval-color: #fb923c; /* Lighter Orange */
+      }
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Inter', sans-serif; /* Default font */
+      }
+      .game-board {
+        background-color: var(--board-bg);
+      }
+      .discard-pile {
+        background-color: var(--discard-bg);
+        /* Adjust grid gap slightly if needed for new tile size */
+        gap: 2px;
+      }
+      /* Apply theme colors to hint text */
+      .hint-ok {
+        color: var(--hint-ok-color);
+      }
+      .hint-eval {
+         color: var(--hint-eval-color);
+      }
+
+      /* Placeholder for other themes: Glassmorphic, Skeuomorphic, Retro, Brutalist */
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4" data-theme="light"> <div class="w-full max-w-4xl mb-4 flex justify-between items-center p-2 bg-gray-200 dark:bg-gray-700 rounded-lg shadow">
+        <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">Mahjong Game</h1>
+        <div class="text-sm text-gray-600 dark:text-gray-300">
+            <span>Wind: East</span> |
+            <span>Dealer: Player 1</span> |
+            <span>Round: 1</span>
+            <button id="theme-toggle" class="ml-4 p-1 rounded bg-gray-300 dark:bg-gray-600">
+                <span class="lucide">💡</span> </button>
+        </div>
+    </div>
+
+    <div class="game-board relative w-full max-w-4xl aspect-square border-4 border-gray-400 dark:border-gray-600 rounded-lg shadow-lg p-8 flex flex-col justify-between items-center">
+
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+            <div class="text-sm mb-1">Opponent 2 (AI)</div>
+            <div class="flex space-x-1">
+                <div class="mahjong-tile mahjong-tile-hidden"></div>
+                <div class="mahjong-tile mahjong-tile-hidden"></div>
+                <div class="mahjong-tile mahjong-tile-hidden"></div>
+                </div>
+        </div>
+
+        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center">
+             <div class="flex flex-col items-center mr-2 transform -rotate-90">
+                <div class="text-sm mb-1 whitespace-nowrap">Opponent 3 (AI)</div>
+                <div class="flex space-x-1">
+                    <div class="mahjong-tile mahjong-tile-hidden"></div>
+                    <div class="mahjong-tile mahjong-tile-hidden"></div>
+                </div>
+             </div>
+        </div>
+
+        <div class="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
+             <div class="flex flex-col items-center ml-2 transform rotate-90">
+                <div class="text-sm mb-1 whitespace-nowrap">Opponent 1 (AI)</div>
+                <div class="flex space-x-1">
+                    <div class="mahjong-tile mahjong-tile-hidden"></div>
+                    <div class="mahjong-tile mahjong-tile-hidden"></div>
+                </div>
+             </div>
+         </div>
+
+        <div class="absolute inset-0 flex items-center justify-center m-16">
+            <div class="relative w-56 h-56 border-2 border-dashed border-gray-500 dark:border-gray-400 rounded flex items-center justify-center"> <div class="absolute -inset-2 border-2 border-green-700 dark:border-green-500 rounded"></div>
+                 <span class="text-xs text-gray-500 dark:text-gray-400">Draw Wall Area</span>
+
+                <div class="discard-pile w-full h-full p-2 grid grid-cols-5 gap-1 overflow-auto rounded">
+                    <div class="mahjong-tile mahjong-tile-discarded">🀇</div>
+                    <div class="mahjong-tile mahjong-tile-discarded">🀙</div>
+                    <div class="mahjong-tile mahjong-tile-discarded">🀃</div>
+                    </div>
+                 <div id="dice-roll" class="absolute bottom-0 right-0 m-1 p-1 bg-white dark:bg-gray-800 rounded shadow text-xs">
+                    🎲 3, 5
+                 </div>
+            </div>
+        </div>
+
+
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center w-full px-4">
+            <div class="flex justify-center space-x-2 mb-2">
+                 </div>
+            <div class="flex justify-center space-x-1 mb-2 flex-wrap"> <div class="mahjong-tile" data-tile="b1">🀇</div>
+                <div class="mahjong-tile" data-tile="b2">🀈</div>
+                <div class="mahjong-tile" data-tile="c3">🀋</div>
+                <div class="mahjong-tile" data-tile="d4">🀔</div>
+                <div class="mahjong-tile" data-tile="d4">🀔</div>
+                <div class="mahjong-tile" data-tile="d4">🀔</div>
+                <div class="mahjong-tile" data-tile="wN">🀃</div>
+                <div class="mahjong-tile" data-tile="wS">🀁</div>
+                <div class="mahjong-tile" data-tile="wW">🀂</div>
+                <div class="mahjong-tile" data-tile="rG">🀅</div>
+                <div class="mahjong-tile" data-tile="rR">🀄</div>
+                <div class="mahjong-tile" data-tile="rW">🀆</div>
+                <div class="mahjong-tile ml-4" data-tile="new">🀅</div>
+            </div>
+             <div class="text-sm mb-2">Your Hand (Player 0)</div>
+        </div>
+
+    </div>
+
+     <div class="w-full max-w-4xl mt-4 flex justify-between items-start p-2 bg-gray-200 dark:bg-gray-700 rounded-lg shadow">
+        <div class="space-x-2">
+            <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50" disabled>Chow</button>
+            <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50" disabled>Pung</button>
+            <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50" disabled>Kong</button>
+            <button class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50" disabled>Mahjong</button>
+            <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600" disabled>Discard</button> <button class="px-3 py-1 bg-yellow-500 text-black rounded hover:bg-yellow-600">Hint?</button>
+        </div>
+        <div id="hint-area" class="text-sm text-right text-gray-700 dark:text-gray-200 w-1/3">
+            Select a tile to discard. <br>
+            <span class="hint-ok font-semibold">Hint: Discarding <span class="hint-tile-emoji">🀃</span> might be okay.</span>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('mahjong-theme') || 'light';
+        body.setAttribute('data-theme', currentTheme);
+        updateToggleButton(currentTheme);
+
+
+        themeToggle.addEventListener('click', () => {
+            let newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('mahjong-theme', newTheme); // Save preference
+            updateToggleButton(newTheme);
+            // Add logic here to potentially swap CSS for other themes (Glassmorphic, etc.) if implemented
+        });
+
+        function updateToggleButton(theme) {
+             // Simple icon change, replace with better icons if needed
+            themeToggle.querySelector('.lucide').textContent = theme === 'light' ? '💡' : '🌙';
+        }
+
+        // Placeholder for game logic, tile interactions, sounds etc.
+        console.log("Mahjong UI Structure Loaded. Game logic needed!");
+
+        // Add basic tile selection visual feedback (example)
+        const playerTiles = document.querySelectorAll('.absolute.bottom-4 .mahjong-tile');
+        const discardButton = document.querySelector('button.bg-red-500'); // More specific selector
+        const hintArea = document.getElementById('hint-area');
+        let selectedTile = null;
+
+        playerTiles.forEach(tile => {
+            tile.addEventListener('click', () => {
+                // Remove selection from previously selected tile
+                if (selectedTile) {
+                    selectedTile.classList.remove('ring-2', 'ring-offset-2', 'ring-blue-500', 'dark:ring-offset-gray-800');
+                }
+                // Select new tile
+                // Added ring-offset for better visibility, especially in dark mode
+                tile.classList.add('ring-2', 'ring-offset-2', 'ring-blue-500', 'dark:ring-offset-gray-800');
+                selectedTile = tile;
+
+                // Enable discard button
+                if(discardButton) { // Check if button exists
+                   discardButton.disabled = false;
+                }
+
+                 // Update hint area (example) - NOW WRAPS EMOJI
+                 const tileFace = tile.textContent;
+                 // Use innerHTML to allow the span tag
+                 // Check if hintArea exists before updating
+                 if (hintArea) {
+                    hintArea.innerHTML = `Selected: ${tileFace}. Click Discard or choose another tile. <br> <span class="hint-eval font-semibold">Hint: Evaluating discard for <span class="hint-tile-emoji">${tileFace}</span>...</span>`;
+                 }
+            });
+        });
+
+        // Add logic to discard button (placeholder)
+        if(discardButton) {
+            discardButton.addEventListener('click', () => {
+                if (selectedTile) {
+                    console.log("Discarding:", selectedTile.textContent, selectedTile.dataset.tile);
+                    // --- TODO: Add actual discard logic here ---
+                    // 1. Move tile to discard pile visually (requires creating new element in discard pile)
+                    // 2. Update game state (e.g., remove from player hand array, add to discard array)
+                    // 3. Remove tile from hand visually (e.g., selectedTile.remove())
+                    // 4. Deselect tile state
+                    selectedTile.classList.remove('ring-2', 'ring-offset-2', 'ring-blue-500', 'dark:ring-offset-gray-800');
+                    // Example: Hide the tile (replace with proper removal/move)
+                    // selectedTile.style.display = 'none';
+                    selectedTile = null; // Clear selection state
+                    // 5. Disable discard button again
+                    discardButton.disabled = true;
+                     // 6. Update hint area
+                     if (hintArea) { // Check if hintArea exists
+                        hintArea.innerHTML = 'Tile discarded. Waiting for next turn...';
+                     }
+
+                } else {
+                    console.log("No tile selected to discard.");
+                    if (hintArea) { // Check if hintArea exists
+                       hintArea.textContent = 'Select a tile from your hand to discard first!';
+                    }
+                }
+            });
+        }
+
+
+    </script>
+     </body>
+</html>
