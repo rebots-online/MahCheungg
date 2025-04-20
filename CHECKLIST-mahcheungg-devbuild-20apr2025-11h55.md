@@ -1,77 +1,77 @@
 # MahCheungg Development Checklist
 
 **Project**: MahCheungg - Mahjong Game with AI/Human-Agnostic Player Interface
-**Created**: May 13, 2025, 10:30
+**Created**: April 19, 2025, 11:55
 **Status**: In Progress
 
 ## Phase 1: Project Setup and Foundation
-- [ ] Create project directory structure
-  - [ ] Set up React + Vite with TypeScript
-  - [ ] Configure Tailwind CSS
-  - [ ] Set up ESLint and Prettier
-  - [ ] Configure testing framework (Jest/Vitest)
-- [ ] Initialize Git repository
-  - [ ] Create .gitignore file
-  - [ ] Make initial commit
-- [ ] Set up basic project documentation
+- [x] Create project directory structure
+  - [x] Set up React + Vite with TypeScript
+  - [x] Configure Tailwind CSS
+  - [x] Set up ESLint and Prettier
+  - [x] Configure testing framework (Jest/Vitest)
+- [x] Initialize Git repository
+  - [x] Create .gitignore file
+  - [x] Make initial commit
+- [x] Set up basic project documentation
   - [x] Create ARCHITECTURE.md
   - [x] Create PLAYER_INTERFACE.md
   - [x] Create SUBSCRIPTION_ANALYSIS.md
-  - [ ] Create README.md with project overview
+  - [x] Create README.md with project overview
 
 ## Phase 2: Core Game Components
-- [ ] Create basic game models
-  - [ ] Implement Tile class with proper Unicode characters
-  - [ ] Create TileSet class for sets (Pung, Kong, Chow)
-  - [ ] Implement Wall class for tile distribution
-  - [ ] Create GameState class to track game state
-- [ ] Implement game rules engine
-  - [ ] Define rule sets (Chinese/Hong Kong/Japanese variants)
-  - [ ] Implement hand evaluation logic
-  - [ ] Create scoring system
-- [ ] Build basic UI components
-  - [ ] Create GameBoard component
-  - [ ] Implement PlayerHand component
-  - [ ] Create DiscardPile component
-  - [ ] Build ActionButtons component
+- [x] Create basic game models
+  - [x] Implement Tile class with proper Unicode characters
+  - [x] Create TileSet class for sets (Pung, Kong, Chow)
+  - [x] Implement Wall class for tile distribution
+  - [x] Create GameState class to track game state
+- [x] Implement game rules engine
+  - [x] Define rule sets (Chinese/Hong Kong/Japanese variants)
+  - [x] Implement hand evaluation logic
+  - [x] Create scoring system
+- [x] Build basic UI components
+  - [x] Create GameBoard component
+  - [x] Implement PlayerHand component
+  - [x] Create DiscardPile component
+  - [x] Build ActionButtons component
 
 ## Phase 3: Player Interface Implementation
-- [ ] Define Player interface
-  - [ ] Create base Player interface with required methods
-  - [ ] Define PlayerConnection interface
-  - [ ] Create UICallbacks interface
-- [ ] Implement HumanPlayer class
-  - [ ] Create local HumanPlayer implementation
-  - [ ] Implement UI interaction methods
-  - [ ] Add decision-making methods with UI prompts
-- [ ] Implement AIPlayer class
-  - [ ] Create base AIPlayer implementation
-  - [ ] Implement basic decision-making algorithms
-  - [ ] Add difficulty levels (Easy, Medium, Hard, Expert)
-  - [ ] Implement personality traits for AI players
+- [x] Define Player interface
+  - [x] Create base Player interface with required methods
+  - [x] Define PlayerConnection interface
+  - [x] Create UICallbacks interface
+- [x] Implement HumanPlayer class
+  - [x] Create local HumanPlayer implementation
+  - [x] Implement UI interaction methods
+  - [x] Add decision-making methods with UI prompts
+- [x] Implement AIPlayer class
+  - [x] Create base AIPlayer implementation
+  - [x] Implement basic decision-making algorithms
+  - [x] Add difficulty levels (Easy, Medium, Hard, Expert)
+  - [x] Implement personality traits for AI players
 
 ## Phase 4: Game Logic Implementation
-- [ ] Create GameManager class
-  - [ ] Implement game initialization logic
-  - [ ] Create turn management system
-  - [ ] Implement tile drawing and discarding
-  - [ ] Add special action handling (Chow, Pung, Kong, Mahjong)
-- [ ] Implement game flow
-  - [ ] Create round management
-  - [ ] Implement wind rotation
-  - [ ] Add game end conditions
-  - [ ] Create scoring and results display
+- [x] Create GameManager class
+  - [x] Implement game initialization logic
+  - [x] Create turn management system
+  - [x] Implement tile drawing and discarding
+  - [x] Add special action handling (Chow, Pung, Kong, Mahjong)
+- [x] Implement game flow
+  - [x] Create round management
+  - [x] Implement wind rotation
+  - [x] Add game end conditions
+  - [x] Create scoring and results display
 - [ ] Add game state persistence
   - [ ] Implement save/load functionality
   - [ ] Create game history tracking
 
 ## Phase 5: Networking Layer
-- [ ] Set up backend server
-  - [ ] Create Node.js/Express server
-  - [ ] Implement WebSocket for real-time communication
+- [x] Set up backend server
+  - [x] Create Node.js/Express server
+  - [x] Implement WebSocket for real-time communication
   - [ ] Set up authentication endpoints
-- [ ] Implement connection types
-  - [ ] Create LocalConnection for same-device play
+- [x] Implement connection types
+  - [x] Create LocalConnection for same-device play
   - [ ] Implement LANConnection for local network play
   - [ ] Build OnlineConnection for server-based play
 - [ ] Add game session management
@@ -162,6 +162,7 @@
   - [ ] Set up monitoring and analytics
 
 ## Current Focus
-- Setting up project structure
-- Implementing core game components
-- Creating player interface
+- Implementing game state persistence
+- Setting up backend server for multiplayer
+- Implementing LAN and online connections
+- Adding communication features

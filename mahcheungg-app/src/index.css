@@ -12,19 +12,52 @@
 
 /* Mahjong Tile Styling */
 .mahjong-tile {
-  @apply inline-flex items-center justify-center w-12 h-16 bg-white border border-gray-300 rounded shadow-md m-0.5 font-bold cursor-pointer select-none overflow-hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem; /* w-12 */
+  height: 4rem; /* h-16 */
+  background-color: white;
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
+  margin: 0.125rem; /* m-0.5 */
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
   font-size: 1.6rem;
   line-height: 1;
 }
 
 .mahjong-tile-discarded {
-  @apply inline-flex items-center justify-center w-9 h-12 bg-white border border-gray-300 rounded shadow-sm m-0.5 font-bold select-none overflow-hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; /* w-9 */
+  height: 3rem; /* h-12 */
+  background-color: white;
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  margin: 0.125rem; /* m-0.5 */
+  font-weight: bold;
+  user-select: none;
+  overflow: hidden;
   font-size: 1.1rem;
   line-height: 1;
 }
 
 .mahjong-tile-hidden {
-  @apply inline-block w-12 h-16 bg-green-200 border border-gray-300 rounded shadow-md m-0.5 text-transparent;
+  display: inline-block;
+  width: 3rem; /* w-12 */
+  height: 4rem; /* h-16 */
+  background-color: #a7f3d0; /* bg-green-200 */
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
+  margin: 0.125rem; /* m-0.5 */
+  color: transparent;
 }
 
 /* Theme Variables */
