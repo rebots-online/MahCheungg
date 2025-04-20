@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,7 +57,8 @@ body {
   overflow: hidden;
   font-size: 1.6rem;
   line-height: 1;
-  color: var(--text-color, black);
+  color: #000 !important; /* Force black text for visibility */
+  text-shadow: 0 0 1px rgba(255,255,255,0.5); /* Add text shadow for better visibility */
 }
 
 .mahjong-tile-discarded {
@@ -74,22 +77,76 @@ body {
   overflow: hidden;
   font-size: 1.1rem;
   line-height: 1;
-  color: var(--text-color, black);
+  color: #000 !important; /* Force black text for visibility */
+  text-shadow: 0 0 1px rgba(255,255,255,0.3); /* Add text shadow for better visibility */
 }
 
 .mahjong-tile-hidden {
   display: inline-block;
-  width: 3rem; /* w-12 */
-  height: 4rem; /* h-16 */
+  width: 2.25rem; /* w-9 - smaller for opponents */
+  height: 3rem; /* h-12 - smaller for opponents */
   background-color: var(--tile-back-bg, #a7f3d0);
   border: 1px solid var(--tile-border, #d1d5db);
   border-radius: 0.25rem; /* rounded */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
   margin: 0.125rem; /* m-0.5 */
   color: transparent;
+  position: relative;
+}
+
+/* Add a pattern to hidden tiles */
+.mahjong-tile-hidden::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 /* Theme Variables */
+
+/* DeepSite Theme */
+[data-theme-style="deepsite"][data-theme-mode="light"] {
+  --bg-color: #1a1a2e;
+  --text-color: #ffffff;
+  --board-bg: #4a2545;
+  --tile-bg: #f8f8f8;
+  --tile-border: #d1d5db;
+  --tile-back-bg: #6b8e23;
+  --discard-bg: #2d152a;
+  --hint-ok-color: #4ade80;
+  --hint-eval-color: #fb923c;
+  --accent-color: #ffc107;
+  --player-info-bg: #16213e;
+  --opponent-info-bg: #0f3460;
+  --input-bg: #2a2a4a;
+  --input-text: #ffffff;
+  --input-border: #ffc107;
+  --label-color: #ffc107;
+}
+
+[data-theme-style="deepsite"][data-theme-mode="dark"] {
+  --bg-color: #0d0d17;
+  --text-color: #ffffff;
+  --board-bg: #2d152a;
+  --tile-bg: #d1d1d1;
+  --tile-border: #a0a0a0;
+  --tile-back-bg: #556b2f;
+  --discard-bg: #1a0d19;
+  --hint-ok-color: #4ade80;
+  --hint-eval-color: #fb923c;
+  --accent-color: #ffc107;
+  --player-info-bg: #0f172a;
+  --opponent-info-bg: #0a2647;
+  --input-bg: #1a1a2e;
+  --input-text: #ffffff;
+  --input-border: #ffc107;
+  --label-color: #ffc107;
+}
 
 /* Brutalist Theme */
 [data-theme-style="brutalist"][data-theme-mode="light"] {
@@ -197,6 +254,89 @@ body {
 }
 
 /* Theme-specific styles */
+
+/* DeepSite specific styles */
+[data-theme-style="deepsite"] {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+[data-theme-style="deepsite"] .game-board {
+  background: linear-gradient(135deg, var(--board-bg) 0%, var(--bg-color) 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-width: 0;
+  overflow: hidden;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile,
+[data-theme-style="deepsite"] .mahjong-tile-discarded {
+  background-color: var(--tile-bg);
+  border-color: var(--tile-border);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: #000;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 2px 7px 10px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile.selected {
+  transform: translateY(-10px);
+  box-shadow: 2px 12px 15px rgba(0, 0, 0, 0.5);
+  border-color: var(--accent-color);
+}
+
+[data-theme-style="deepsite"] .mahjong-tile-hidden {
+  background-color: var(--tile-back-bg);
+  border-color: var(--tile-border);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme-style="deepsite"] button {
+  background-color: var(--player-info-bg);
+  border: 1px solid var(--accent-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+[data-theme-style="deepsite"] button:hover {
+  background-color: var(--accent-color);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme-style="deepsite"] .player-info {
+  background-color: var(--player-info-bg);
+  border-left: 4px solid var(--accent-color);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+[data-theme-style="deepsite"] .opponent .player-info {
+  background-color: var(--opponent-info-bg);
+}
+
+[data-theme-style="deepsite"] .discard-pile {
+  background-color: var(--discard-bg);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Animation for DeepSite theme */
+@keyframes pulse-deepsite {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+[data-theme-style="deepsite"] .pulse {
+  animation: pulse-deepsite 1.5s infinite;
+}
 
 /* Brutalist specific styles */
 [data-theme-style="brutalist"] .game-board {

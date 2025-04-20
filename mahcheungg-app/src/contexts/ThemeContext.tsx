@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 // Theme style types
-export type ThemeStyle = 'brutalist' | 'skeuomorphic' | 'retro';
+export type ThemeStyle = 'deepsite' | 'brutalist' | 'skeuomorphic' | 'retro';
 export type ThemeMode = 'light' | 'dark';
 
 interface ThemeContextType {
@@ -15,7 +15,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [style, setStyle] = useState<ThemeStyle>('brutalist');
+  const [style, setStyle] = useState<ThemeStyle>('deepsite');
   const [mode, setMode] = useState<ThemeMode>('light');
 
   // Custom setStyle that preserves the current mode

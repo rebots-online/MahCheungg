@@ -48,8 +48,9 @@ const GameController: React.FC<GameControllerProps> = ({
             console.log('Requesting discard decision');
             // For demo purposes, we'll just use the first tile
             setTimeout(() => {
-              if (currentPlayer && currentPlayer.hand.length > 0) {
-                callback(currentPlayer.hand[0]);
+              // Use humanPlayer directly instead of currentPlayer
+              if (humanPlayer.hand.length > 0) {
+                callback(humanPlayer.hand[0]);
               }
             }, 500);
           },
@@ -115,7 +116,7 @@ const GameController: React.FC<GameControllerProps> = ({
 
   // Handle player actions
   const handleAction = (action: string, tile?: Tile) => {
-    if (!gameManager || !gameState || !currentPlayer) return;
+    if (!gameState || !currentPlayer) return;
 
     console.log('Action:', action, 'Tile:', tile);
 
@@ -123,21 +124,27 @@ const GameController: React.FC<GameControllerProps> = ({
     switch (action) {
       case 'selectTile':
         // Update UI to show selected tile
+        console.log('Selected tile:', tile);
         break;
       case 'discard':
         // Discard the selected tile
+        console.log('Discarding tile:', tile);
         break;
       case 'chow':
         // Declare a chow
+        console.log('Declaring chow');
         break;
       case 'pung':
         // Declare a pung
+        console.log('Declaring pung');
         break;
       case 'kong':
         // Declare a kong
+        console.log('Declaring kong');
         break;
       case 'mahjong':
         // Declare a win
+        console.log('Declaring win');
         break;
       default:
         console.warn('Unknown action:', action);
