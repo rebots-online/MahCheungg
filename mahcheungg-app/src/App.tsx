@@ -2,6 +2,7 @@ import { useState } from 'react';
 import HomePage from './components/ui/HomePage';
 import GameController from './components/game/GameController';
 import { AIDifficulty } from './models/player/AIPlayer';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -17,17 +18,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
-      {!gameStarted ? (
-        <HomePage onStartGame={handleStartGame} />
-      ) : (
-        <GameController
-          playerName={playerName}
-          playerCount={playerCount}
-          aiDifficulty={aiDifficulty}
-        />
-      )}
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
+        {!gameStarted ? (
+          <HomePage onStartGame={handleStartGame} />
+        ) : (
+          <GameController
+            playerName={playerName}
+            playerCount={playerCount}
+            aiDifficulty={aiDifficulty}
+          />
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

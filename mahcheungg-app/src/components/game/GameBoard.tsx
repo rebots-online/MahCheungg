@@ -6,6 +6,8 @@ import { Player } from '../../models/player/Player';
 import PlayerHand from './PlayerHand';
 import DiscardPile from './DiscardPile';
 import ActionButtons from './ActionButtons';
+import ThemeSelector from '../ui/ThemeSelector';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface GameBoardProps {
   gameState: GameState;
@@ -20,23 +22,13 @@ const GameBoard: React.FC<GameBoardProps> = ({
   players,
   onAction
 }) => {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  
-  // Toggle theme
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-  
-  // Update the document theme attribute
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme);
-  }, [theme]);
-  
+  const { mode, toggleMode } = useTheme();
+
   // Get player positions relative to the current player
   const getPlayerPosition = (index: number): 'bottom' | 'left' | 'top' | 'right' => {
     const currentPlayerIndex = players.indexOf(currentPlayer);
     const relativePosition = (index - currentPlayerIndex + players.length) % players.length;
-    
+
     switch (relativePosition) {
       case 0:
         return 'bottom';
@@ -50,7 +42,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         return 'bottom';
     }
   };
-  
+
   // Get wind name
   const getWindName = (wind: Wind): string => {
     switch (wind) {
@@ -66,7 +58,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         return '';
     }
   };
-  
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       {/* Game info bar */}
@@ -77,23 +69,26 @@ const GameBoard: React.FC<GameBoardProps> = ({
           <span>Dealer: {players[gameState.getDealer().id].name}</span> |
           <span>Round: {gameState.getRoundNumber()}</span>
           <button
-            onClick={toggleTheme}
+            onClick={toggleMode}
             className="ml-4 p-1 rounded bg-gray-300 dark:bg-gray-600"
           >
-            {theme === 'light' ? '🌙' : '💡'}
+            {mode === 'light' ? '🌙' : '💡'}
           </button>
         </div>
       </div>
-      
+
+      {/* Theme Selector */}
+      <ThemeSelector />
+
       {/* Game board */}
-      <div className="game-board relative w-full max-w-4xl aspect-square border-4 border-gray-400 dark:border-gray-600 rounded-lg shadow-lg p-8 flex flex-col justify-between items-center">
+      <div className="game-board relative w-full max-w-4xl aspect-square border-4 rounded-lg shadow-lg p-8 flex flex-col justify-between items-center" style={{ borderColor: 'var(--tile-border, #d1d5db)', backgroundColor: 'var(--board-bg, #e5e7eb)' }}>
         {/* Opponent players */}
         {players.map((player, index) => {
           if (player === currentPlayer) return null;
-          
+
           const position = getPlayerPosition(index);
           const isAI = player.isAI;
-          
+
           return (
             <div
               key={player.id}
@@ -128,7 +123,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
                   <div key={i} className="mahjong-tile-hidden"></div>
                 ))}
               </div>
-              
+
               {/* Show exposed sets */}
               {player.exposedSets.length > 0 && (
                 <div className="mt-2 flex flex-wrap">
@@ -149,7 +144,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
             </div>
           );
         })}
-        
+
         {/* Discard pile and wall */}
         <div className="absolute inset-0 flex items-center justify-center m-16">
           <div className="relative w-56 h-56 border-2 border-dashed border-gray-500 dark:border-gray-400 rounded flex items-center justify-center">
@@ -157,9 +152,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
             <span className="text-xs text-gray-500 dark:text-gray-400">
               Draw Wall Area
             </span>
-            
+
             <DiscardPile tiles={gameState.getDiscardPile()} />
-            
+
             <div
               id="dice-roll"
               className="absolute bottom-0 right-0 m-1 p-1 bg-white dark:bg-gray-800 rounded shadow text-xs"
@@ -168,7 +163,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
             </div>
           </div>
         </div>
-        
+
         {/* Current player's hand */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center w-full px-4">
           <PlayerHand
@@ -178,7 +173,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
           <div className="text-sm mb-2">Your Hand ({currentPlayer.name})</div>
         </div>
       </div>
-      
+
       {/* Action buttons */}
       <ActionButtons
         onAction={(action) => onAction(action)}

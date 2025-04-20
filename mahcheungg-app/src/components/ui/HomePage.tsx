@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { AIDifficulty } from '../../models/player/AIPlayer';
+import ThemeSelector from './ThemeSelector';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface HomePageProps {
   onStartGame: (playerName: string, playerCount: number, aiDifficulty: AIDifficulty) => void;
@@ -10,18 +12,20 @@ const HomePage: React.FC<HomePageProps> = ({ onStartGame }) => {
   const [playerCount, setPlayerCount] = useState(4);
   const [aiDifficulty, setAIDifficulty] = useState<AIDifficulty>(AIDifficulty.MEDIUM);
   const [showSubscriptionInfo, setShowSubscriptionInfo] = useState(false);
-  
+  const { mode } = useTheme();
+
   const handleStartGame = () => {
     onStartGame(playerName, playerCount, aiDifficulty);
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800 p-4">
       <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-md">
+        <ThemeSelector />
         <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           MahCheungg
         </h1>
-        
+
         <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300 mb-2">
             Your Name
@@ -33,7 +37,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartGame }) => {
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
           />
         </div>
-        
+
         <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300 mb-2">
             Number of Players
@@ -48,7 +52,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartGame }) => {
             <option value={4}>4 Players</option>
           </select>
         </div>
-        
+
         <div className="mb-6">
           <label className="block text-gray-700 dark:text-gray-300 mb-2">
             AI Difficulty
@@ -64,14 +68,14 @@ const HomePage: React.FC<HomePageProps> = ({ onStartGame }) => {
             <option value={AIDifficulty.EXPERT}>Expert</option>
           </select>
         </div>
-        
+
         <button
           onClick={handleStartGame}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-200"
         >
           Start Game
         </button>
-        
+
         <div className="mt-4">
           <button
             onClick={() => setShowSubscriptionInfo(!showSubscriptionInfo)}
@@ -79,7 +83,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartGame }) => {
           >
             {showSubscriptionInfo ? 'Hide Subscription Info' : 'Show Subscription Info'}
           </button>
-          
+
           {showSubscriptionInfo && (
             <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               <h3 className="font-bold mb-1">Subscription Tiers:</h3>
