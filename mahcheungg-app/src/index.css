@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mahjong Tile Styling */
+.mahjong-tile {
+  @apply inline-flex items-center justify-center w-12 h-16 bg-white border border-gray-300 rounded shadow-md m-0.5 font-bold cursor-pointer select-none overflow-hidden;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.mahjong-tile-discarded {
+  @apply inline-flex items-center justify-center w-9 h-12 bg-white border border-gray-300 rounded shadow-sm m-0.5 font-bold select-none overflow-hidden;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.mahjong-tile-hidden {
+  @apply inline-block w-12 h-16 bg-green-200 border border-gray-300 rounded shadow-md m-0.5 text-transparent;
+}
+
+/* Theme Variables */
+:root {
+  --bg-color: #f3f4f6;
+  --text-color: #1f2937;
+  --board-bg: #e5e7eb;
+  --tile-bg: #ffffff;
+  --tile-border: #d1d5db;
+  --tile-back-bg: #a0d9a0;
+  --discard-bg: #d1d5db;
+  --hint-ok-color: #16a34a;
+  --hint-eval-color: #ea580c;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1f2937;
+  --text-color: #f3f4f6;
+  --board-bg: #374151;
+  --tile-bg: #4b5563;
+  --tile-border: #6b7280;
+  --tile-back-bg: #3f613f;
+  --discard-bg: #4b5563;
+  --hint-ok-color: #4ade80;
+  --hint-eval-color: #fb923c;
+}
