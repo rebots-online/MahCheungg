@@ -68,13 +68,19 @@ Create a minimal but functional dev build of MahCheungg with working Stripe and 
   - [x] Payment processing
 
 ### 5. Game Functionality
-- [ ] Complete basic game mechanics
-  - [ ] Implement tile distribution
-  - [ ] Add player turns
-  - [ ] Implement basic game rules
-- [ ] Create minimal AI opponent
-  - [ ] Implement random but valid moves
-  - [ ] Add basic strategy for demonstration
+- [x] Complete basic game mechanics
+  - [x] Implement tile distribution
+  - [x] Add player turns
+  - [x] Implement basic game rules
+- [x] Create minimal AI opponent
+  - [x] Implement random but valid moves
+  - [x] Add basic strategy for demonstration
+- [x] Create game UI components
+  - [x] Implement TileComponent for displaying tiles
+  - [x] Create PlayerHandComponent for player hands
+  - [x] Build GameBoardComponent for the game board
+  - [x] Add GameControlsComponent for game actions
+  - [x] Create GameSetupComponent for game configuration
 
 ### 6. Environment Configuration
 - [x] Create .env files for development and production
@@ -124,10 +130,11 @@ Create a minimal but functional dev build of MahCheungg with working Stripe and 
 4. [x] Implement environment configuration
 
 ### Day 4
-1. [ ] Complete basic game mechanics
-2. [ ] Create minimal AI opponent
-3. [ ] Test payment and subscription flows
-4. [ ] Deploy frontend and backend
+1. [x] Complete basic game mechanics
+2. [x] Create minimal AI opponent
+3. [x] Create game UI components
+4. [ ] Test payment and subscription flows
+5. [ ] Deploy frontend and backend
 
 ## Technical Considerations
 
