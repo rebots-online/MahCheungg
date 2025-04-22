@@ -12,6 +12,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.7.0",
     "@revenuecat/purchases-js": "^1.2.0",
+    "@stripe/react-stripe-js": "^3.6.0",
+    "@stripe/stripe-js": "^7.2.0",
     "@tailwindcss/postcss": "^4.1.4",
     "firebase": "^11.6.0",
     "react": "^19.0.0",

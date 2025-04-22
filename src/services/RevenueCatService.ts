@@ -8,7 +8,7 @@ export enum SubscriptionTier {
 }
 
 // RevenueCat configuration
-const REVENUECAT_API_KEY = 'your_revenuecat_api_key'; // Replace with your actual API key
+const REVENUECAT_API_KEY = process.env.REACT_APP_REVENUECAT_API_KEY || 'sk_VAfsBZEIKuOpuwQOlFOoEZJzAuceO'; // API Key from environment variable
 
 class RevenueCatService {
   private static instance: RevenueCatService;
@@ -36,15 +36,15 @@ class RevenueCatService {
 
       await Purchases.configure(configuration);
       this.initialized = true;
-      
+
       // Get initial customer info
       this.customerInfo = await Purchases.getCustomerInfo();
-      
+
       // Set up customer info listener
       Purchases.addCustomerInfoUpdateListener((info) => {
         this.customerInfo = info;
       });
-      
+
       console.log('RevenueCat initialized successfully');
     } catch (error) {
       console.error('Failed to initialize RevenueCat:', error);
@@ -59,10 +59,10 @@ class RevenueCatService {
 
     try {
       const customerInfo = await Purchases.getCustomerInfo();
-      
+
       // Check for active subscriptions
       const entitlements = customerInfo.entitlements.active;
-      
+
       if (entitlements['premium']) {
         return SubscriptionTier.PREMIUM;
       } else if (entitlements['standard']) {
@@ -84,21 +84,21 @@ class RevenueCatService {
     try {
       // Get available packages
       const offerings = await Purchases.getOfferings();
-      
+
       if (!offerings.current) {
         throw new Error('No offerings available');
       }
-      
+
       // Find the package
       const pkg = offerings.current.availablePackages.find(p => p.identifier === packageId);
-      
+
       if (!pkg) {
         throw new Error(`Package ${packageId} not found`);
       }
-      
+
       // Purchase the package
       await Purchases.purchasePackage(pkg);
-      
+
       console.log(`Successfully purchased package: ${packageId}`);
     } catch (error) {
       console.error('Failed to purchase package:', error);
