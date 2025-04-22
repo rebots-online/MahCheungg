@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './components/ui/HomePage';
 import GameController from './components/game/GameController';
 import GameHub from './components/hub/GameHub';
 import LearningCenter from './components/learn/LearningCenter';
+import GamePage from './pages/GamePage';
 import { AIDifficulty } from './models/player/AIPlayer';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { AuthProvider } from './contexts/AuthContext';
 import WebLNService from './services/WebLNService';
 import AudioService from './services/AudioService';
 import ChatbotService from './services/ChatbotService';
@@ -92,25 +95,29 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
-          {showGameHub ? (
-            <GameHub onStartGame={handleStartGame} />
-          ) : showLearningCenter ? (
-            <LearningCenter onBack={handleBackToHub} />
-          ) : !gameStarted ? (
-            <HomePage onStartGame={handleStartGame} />
-          ) : (
-            <GameController
-              playerName={playerName}
-              playerCount={playerCount}
-              aiDifficulty={aiDifficulty}
-            />
-          )}
-        </div>
-      </LanguageProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <Router>
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
+              <Routes>
+                <Route path="/" element={<GameHub onStartGame={handleStartGame} />} />
+                <Route path="/learn" element={<LearningCenter onBack={handleBackToHub} />} />
+                <Route path="/game" element={<GamePage />} />
+                <Route path="/play" element={
+                  <GameController
+                    playerName={playerName}
+                    playerCount={playerCount}
+                    aiDifficulty={aiDifficulty}
+                  />
+                } />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+          </Router>
+        </LanguageProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

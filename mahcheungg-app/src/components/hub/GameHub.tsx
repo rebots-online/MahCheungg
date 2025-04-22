@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import DepositModal from '../payment/DepositModal';
 import AuthModal from '../auth/AuthModal';
@@ -18,6 +19,7 @@ const GameHub: React.FC<GameHubProps> = ({ onStartGame }) => {
   const [activeTab, setActiveTab] = useState('home');
   const { style } = useTheme();
   const isDeepSite = style === 'deepsite';
+  const navigate = useNavigate();
 
   // Check if WebLN is available
   const [weblnAvailable, setWeblnAvailable] = useState(false);
@@ -48,8 +50,16 @@ const GameHub: React.FC<GameHubProps> = ({ onStartGame }) => {
   };
 
   const handleStartGame = (mode: string) => {
-    // Pass the mode parameter to the parent component
-    onStartGame('Player 1', 4, AIDifficulty.MEDIUM, mode);
+    if (mode === 'ai' || mode === 'pvp') {
+      // Navigate to the game page
+      navigate('/game');
+    } else if (mode === 'learn') {
+      // Navigate to the learning center
+      navigate('/learn');
+    } else {
+      // Fallback to the old method
+      onStartGame('Player 1', 4, AIDifficulty.MEDIUM, mode);
+    }
   };
 
   return (
