@@ -1,0 +1,80 @@
+/* Walkthrough styles */
+.walkthrough-active {
+  overflow: hidden;
+}
+
+/* Animation for the highlight */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4), 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0), 0 0 0 9999px rgba(0, 0, 0, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Animation for the card appearance */
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation for the card glow */
+@keyframes cardGlow {
+  0% {
+    box-shadow: 0 0 5px 2px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 5px 2px rgba(59, 130, 246, 0.5);
+  }
+}
+
+/* Apply animation to highlighted elements */
+.walkthrough-active .highlighted {
+  animation: pulse 2s infinite;
+  z-index: 1000;
+  position: relative;
+}
+
+/* Walkthrough card styling */
+.walkthrough-card {
+  animation: cardGlow 3s infinite, appear 0.5s ease-out;
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  /* Use theme variables instead of hardcoded colors */
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+/* Ensure text is visible in both light and dark modes */
+.walkthrough-card p {
+  color: hsl(var(--card-foreground));
+}
+
+/* Ensure buttons have proper contrast */
+.walkthrough-card button {
+  color: hsl(var(--primary-foreground));
+  background-color: hsl(var(--primary));
+}
+
+.walkthrough-card button[variant="outline"] {
+  color: hsl(var(--card-foreground));
+  background-color: transparent;
+  border-color: hsl(var(--border));
+}
+
+/* Animation class */
+.animate-appear {
+  animation: appear 0.5s ease-out;
+}

@@ -8,7 +8,8 @@ export enum SubscriptionTier {
 }
 
 // Stripe configuration
-const STRIPE_PUBLIC_KEY = process.env.REACT_APP_STRIPE_PUBLIC_KEY || 'pk_test_your_stripe_public_key';
+const STRIPE_PUBLIC_KEY = process.env.REACT_APP_STRIPE_PUBLIC_KEY || '';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 class StripeService {
   private static instance: StripeService;
@@ -77,7 +78,7 @@ class StripeService {
       this.subscriptionId = data.subscriptionId;
       this.subscriptionStatus = 'active';
       this.updateSubscriptionTier(priceId);
-      
+
       return data;
     } catch (error) {
       console.error('Error creating subscription:', error);
@@ -106,7 +107,7 @@ class StripeService {
         this.subscriptionStatus = 'canceled';
         this.subscriptionTier = SubscriptionTier.FREE;
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error canceling subscription:', error);
@@ -135,7 +136,7 @@ class StripeService {
       if (data.success) {
         this.updateSubscriptionTier(newPriceId);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error updating subscription:', error);
@@ -163,7 +164,7 @@ class StripeService {
       const data = await response.json();
       this.subscriptionStatus = data.status;
       this.subscriptionTier = data.tier;
-      
+
       return data;
     } catch (error) {
       console.error('Error getting subscription status:', error);
@@ -190,7 +191,7 @@ class StripeService {
 
       const data = await response.json();
       this.customerId = data.customerId;
-      
+
       return data;
     } catch (error) {
       console.error('Error creating customer:', error);
