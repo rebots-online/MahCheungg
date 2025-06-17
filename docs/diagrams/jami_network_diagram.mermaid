@@ -1,0 +1,41 @@
+graph TD
+    subgraph "Player 1 Device"
+        UI1[UI Layer] <--> GL1[Game Logic]
+        GL1 <--> JI1[Jami Integration]
+        JI1 <--> JC1[Jami Client]
+    end
+    
+    subgraph "Player 2 Device"
+        UI2[UI Layer] <--> GL2[Game Logic]
+        GL2 <--> JI2[Jami Integration]
+        JI2 <--> JC2[Jami Client]
+    end
+    
+    subgraph "Player 3 Device"
+        UI3[UI Layer] <--> GL3[Game Logic]
+        GL3 <--> JI3[Jami Integration]
+        JI3 <--> JC3[Jami Client]
+    end
+    
+    subgraph "Player 4 Device"
+        UI4[UI Layer] <--> GL4[Game Logic]
+        GL4 <--> JI4[Jami Integration]
+        JI4 <--> JC4[Jami Client]
+    end
+    
+    JC1 <--> JC2
+    JC1 <--> JC3
+    JC1 <--> JC4
+    JC2 <--> JC3
+    JC2 <--> JC4
+    JC3 <--> JC4
+    
+    classDef uiLayer fill:#f9d,stroke:#333,stroke-width:2px;
+    classDef gameLogic fill:#ad5,stroke:#333,stroke-width:2px;
+    classDef jamiInt fill:#5ad,stroke:#333,stroke-width:2px;
+    classDef jamiClient fill:#da5,stroke:#333,stroke-width:2px;
+    
+    class UI1,UI2,UI3,UI4 uiLayer;
+    class GL1,GL2,GL3,GL4 gameLogic;
+    class JI1,JI2,JI3,JI4 jamiInt;
+    class JC1,JC2,JC3,JC4 jamiClient;

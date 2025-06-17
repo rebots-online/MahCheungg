@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,44 +12,423 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  background-color: var(--bg-color, #f3f4f6);
+  color: var(--text-color, #1f2937);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Apply theme colors to common elements */
+.bg-gray-100 { background-color: var(--bg-color, #f3f4f6) !important; }
+.bg-gray-200 { background-color: var(--board-bg, #e5e7eb) !important; }
+.bg-gray-700 { background-color: var(--board-bg, #374151) !important; }
+.bg-gray-800 { background-color: var(--bg-color, #1f2937) !important; }
+
+.text-gray-100 { color: var(--text-color, #f3f4f6) !important; }
+.text-gray-300 { color: var(--text-color, #d1d5db) !important; }
+.text-gray-600 { color: var(--text-color, #4b5563) !important; }
+.text-gray-700 { color: var(--text-color, #374151) !important; }
+.text-gray-800 { color: var(--text-color, #1f2937) !important; }
+
+/* Override Tailwind dark mode with our theme variables */
+[data-theme-mode="dark"] .dark\:bg-gray-700 { background-color: var(--board-bg, #374151) !important; }
+[data-theme-mode="dark"] .dark\:bg-gray-800 { background-color: var(--bg-color, #1f2937) !important; }
+[data-theme-mode="dark"] .dark\:text-white { color: var(--text-color, #ffffff) !important; }
+[data-theme-mode="dark"] .dark\:text-gray-100 { color: var(--text-color, #f3f4f6) !important; }
+[data-theme-mode="dark"] .dark\:text-gray-200 { color: var(--text-color, #e5e7eb) !important; }
+[data-theme-mode="dark"] .dark\:text-gray-300 { color: var(--text-color, #d1d5db) !important; }
+[data-theme-mode="dark"] .dark\:border-gray-600 { border-color: var(--tile-border, #4b5563) !important; }
+
 /* Mahjong Tile Styling */
 .mahjong-tile {
-  @apply inline-flex items-center justify-center w-12 h-16 bg-white border border-gray-300 rounded shadow-md m-0.5 font-bold cursor-pointer select-none overflow-hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem; /* w-12 */
+  height: 4rem; /* h-16 */
+  background-color: var(--tile-bg, white);
+  border: 1px solid var(--tile-border, #d1d5db);
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
+  margin: 0.125rem; /* m-0.5 */
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
   font-size: 1.6rem;
   line-height: 1;
+  color: #000 !important; /* Force black text for visibility */
+  text-shadow: 0 0 1px rgba(255,255,255,0.5); /* Add text shadow for better visibility */
 }
 
 .mahjong-tile-discarded {
-  @apply inline-flex items-center justify-center w-9 h-12 bg-white border border-gray-300 rounded shadow-sm m-0.5 font-bold select-none overflow-hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; /* w-9 */
+  height: 3rem; /* h-12 */
+  background-color: var(--tile-bg, white);
+  border: 1px solid var(--tile-border, #d1d5db);
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  margin: 0.125rem; /* m-0.5 */
+  font-weight: bold;
+  user-select: none;
+  overflow: hidden;
   font-size: 1.1rem;
   line-height: 1;
+  color: #000 !important; /* Force black text for visibility */
+  text-shadow: 0 0 1px rgba(255,255,255,0.3); /* Add text shadow for better visibility */
 }
 
 .mahjong-tile-hidden {
-  @apply inline-block w-12 h-16 bg-green-200 border border-gray-300 rounded shadow-md m-0.5 text-transparent;
+  display: inline-block;
+  width: 2.25rem; /* w-9 - smaller for opponents */
+  height: 3rem; /* h-12 - smaller for opponents */
+  background-color: var(--tile-back-bg, #a7f3d0);
+  border: 1px solid var(--tile-border, #d1d5db);
+  border-radius: 0.25rem; /* rounded */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
+  margin: 0.125rem; /* m-0.5 */
+  color: transparent;
+  position: relative;
+}
+
+/* Add a pattern to hidden tiles */
+.mahjong-tile-hidden::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 /* Theme Variables */
-:root {
-  --bg-color: #f3f4f6;
-  --text-color: #1f2937;
-  --board-bg: #e5e7eb;
-  --tile-bg: #ffffff;
-  --tile-border: #d1d5db;
-  --tile-back-bg: #a0d9a0;
-  --discard-bg: #d1d5db;
-  --hint-ok-color: #16a34a;
-  --hint-eval-color: #ea580c;
-}
 
-[data-theme="dark"] {
-  --bg-color: #1f2937;
-  --text-color: #f3f4f6;
-  --board-bg: #374151;
-  --tile-bg: #4b5563;
-  --tile-border: #6b7280;
-  --tile-back-bg: #3f613f;
-  --discard-bg: #4b5563;
+/* DeepSite Theme */
+[data-theme-style="deepsite"][data-theme-mode="light"] {
+  --bg-color: #1a1a2e;
+  --text-color: #ffffff;
+  --board-bg: #4a2545;
+  --tile-bg: #f8f8f8;
+  --tile-border: #d1d5db;
+  --tile-back-bg: #6b8e23;
+  --discard-bg: #2d152a;
   --hint-ok-color: #4ade80;
   --hint-eval-color: #fb923c;
+  --accent-color: #ffc107;
+  --player-info-bg: #16213e;
+  --opponent-info-bg: #0f3460;
+  --input-bg: #2a2a4a;
+  --input-text: #ffffff;
+  --input-border: #ffc107;
+  --label-color: #ffc107;
+}
+
+[data-theme-style="deepsite"][data-theme-mode="dark"] {
+  --bg-color: #0d0d17;
+  --text-color: #ffffff;
+  --board-bg: #2d152a;
+  --tile-bg: #d1d1d1;
+  --tile-border: #a0a0a0;
+  --tile-back-bg: #556b2f;
+  --discard-bg: #1a0d19;
+  --hint-ok-color: #4ade80;
+  --hint-eval-color: #fb923c;
+  --accent-color: #ffc107;
+  --player-info-bg: #0f172a;
+  --opponent-info-bg: #0a2647;
+  --input-bg: #1a1a2e;
+  --input-text: #ffffff;
+  --input-border: #ffc107;
+  --label-color: #ffc107;
+}
+
+/* Brutalist Theme */
+[data-theme-style="brutalist"][data-theme-mode="light"] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --board-bg: #f0f0f0;
+  --tile-bg: #ffffff;
+  --tile-border: #000000;
+  --tile-back-bg: #00ff00;
+  --discard-bg: #e0e0e0;
+  --hint-ok-color: #00ff00;
+  --hint-eval-color: #ff0000;
+
+  /* Brutalist specific */
+  --brutalist-shadow: none;
+  --brutalist-border-width: 3px;
+  --brutalist-font: 'Courier New', monospace;
+}
+
+[data-theme-style="brutalist"][data-theme-mode="dark"] {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+  --board-bg: #1a1a1a;
+  --tile-bg: #333333;
+  --tile-border: #ffffff;
+  --tile-back-bg: #00aa00;
+  --discard-bg: #222222;
+  --hint-ok-color: #00ff00;
+  --hint-eval-color: #ff0000;
+
+  /* Brutalist specific */
+  --brutalist-shadow: none;
+  --brutalist-border-width: 3px;
+  --brutalist-font: 'Courier New', monospace;
+}
+
+/* Skeuomorphic Theme */
+[data-theme-style="skeuomorphic"][data-theme-mode="light"] {
+  --bg-color: #e0d5c0;
+  --text-color: #5c4b3a;
+  --board-bg: #8b7355;
+  --tile-bg: #f5f0e6;
+  --tile-border: #d2b48c;
+  --tile-back-bg: #6b8e23;
+  --discard-bg: #d2b48c;
+  --hint-ok-color: #6b8e23;
+  --hint-eval-color: #cd5c5c;
+
+  /* Skeuomorphic specific */
+  --skeu-tile-shadow: 2px 2px 5px rgba(0,0,0,0.3), inset 1px 1px 2px rgba(255,255,255,0.5);
+  --skeu-board-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  --skeu-border-radius: 10px;
+}
+
+[data-theme-style="skeuomorphic"][data-theme-mode="dark"] {
+  --bg-color: #3c2f1f;
+  --text-color: #e0d5c0;
+  --board-bg: #5c4b3a;
+  --tile-bg: #d2b48c;
+  --tile-border: #8b7355;
+  --tile-back-bg: #556b2f;
+  --discard-bg: #8b7355;
+  --hint-ok-color: #8fbc8f;
+  --hint-eval-color: #cd5c5c;
+
+  /* Skeuomorphic specific */
+  --skeu-tile-shadow: 2px 2px 5px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.2);
+  --skeu-board-shadow: 0 5px 15px rgba(0,0,0,0.7);
+  --skeu-border-radius: 10px;
+}
+
+/* Retro Theme */
+[data-theme-style="retro"][data-theme-mode="light"] {
+  --bg-color: #c0c0c0;
+  --text-color: #000080;
+  --board-bg: #008080;
+  --tile-bg: #ffffff;
+  --tile-border: #808080;
+  --tile-back-bg: #00ff00;
+  --discard-bg: #a0a0a0;
+  --hint-ok-color: #00ff00;
+  --hint-eval-color: #ff0000;
+
+  /* Retro specific */
+  --retro-font: 'Courier New', monospace;
+  --retro-border: 2px solid #000000;
+  --retro-shadow: 4px 4px 0px #000000;
+}
+
+[data-theme-style="retro"][data-theme-mode="dark"] {
+  --bg-color: #000080;
+  --text-color: #00ff00;
+  --board-bg: #000000;
+  --tile-bg: #0000aa;
+  --tile-border: #00ffff;
+  --tile-back-bg: #00aa00;
+  --discard-bg: #000044;
+  --hint-ok-color: #00ff00;
+  --hint-eval-color: #ff0000;
+
+  /* Retro specific */
+  --retro-font: 'Courier New', monospace;
+  --retro-border: 2px solid #00ffff;
+  --retro-shadow: 4px 4px 0px #00ffff;
+}
+
+/* Theme-specific styles */
+
+/* DeepSite specific styles */
+[data-theme-style="deepsite"] {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+[data-theme-style="deepsite"] .game-board {
+  background: linear-gradient(135deg, var(--board-bg) 0%, var(--bg-color) 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-width: 0;
+  overflow: hidden;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile,
+[data-theme-style="deepsite"] .mahjong-tile-discarded {
+  background-color: var(--tile-bg);
+  border-color: var(--tile-border);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: #000;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 2px 7px 10px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+[data-theme-style="deepsite"] .mahjong-tile.selected {
+  transform: translateY(-10px);
+  box-shadow: 2px 12px 15px rgba(0, 0, 0, 0.5);
+  border-color: var(--accent-color);
+}
+
+[data-theme-style="deepsite"] .mahjong-tile-hidden {
+  background-color: var(--tile-back-bg);
+  border-color: var(--tile-border);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme-style="deepsite"] button {
+  background-color: var(--player-info-bg);
+  border: 1px solid var(--accent-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+[data-theme-style="deepsite"] button:hover {
+  background-color: var(--accent-color);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme-style="deepsite"] .player-info {
+  background-color: var(--player-info-bg);
+  border-left: 4px solid var(--accent-color);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+[data-theme-style="deepsite"] .opponent .player-info {
+  background-color: var(--opponent-info-bg);
+}
+
+[data-theme-style="deepsite"] .discard-pile {
+  background-color: var(--discard-bg);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Animation for DeepSite theme */
+@keyframes pulse-deepsite {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+[data-theme-style="deepsite"] .pulse {
+  animation: pulse-deepsite 1.5s infinite;
+}
+
+/* Brutalist specific styles */
+[data-theme-style="brutalist"] .game-board {
+  border-width: var(--brutalist-border-width);
+  box-shadow: var(--brutalist-shadow);
+}
+
+[data-theme-style="brutalist"] .mahjong-tile,
+[data-theme-style="brutalist"] .mahjong-tile-discarded,
+[data-theme-style="brutalist"] .mahjong-tile-hidden {
+  border-width: var(--brutalist-border-width);
+  box-shadow: var(--brutalist-shadow);
+  font-family: var(--brutalist-font);
+}
+
+[data-theme-style="brutalist"] button {
+  border-width: var(--brutalist-border-width);
+  border-radius: 0;
+  box-shadow: var(--brutalist-shadow);
+  text-transform: uppercase;
+  font-family: var(--brutalist-font);
+}
+
+/* Skeuomorphic specific styles */
+[data-theme-style="skeuomorphic"] .game-board {
+  box-shadow: var(--skeu-board-shadow);
+  border-radius: var(--skeu-border-radius);
+  border: 10px solid #8b4513;
+  background-color: var(--board-bg);
+  position: relative;
+}
+
+[data-theme-style="skeuomorphic"] .game-board::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
+  border-radius: var(--skeu-border-radius);
+  pointer-events: none;
+}
+
+[data-theme-style="skeuomorphic"] .mahjong-tile,
+[data-theme-style="skeuomorphic"] .mahjong-tile-discarded {
+  box-shadow: var(--skeu-tile-shadow);
+  border-radius: 5px;
+  background-color: var(--tile-bg);
+  position: relative;
+}
+
+[data-theme-style="skeuomorphic"] .mahjong-tile::before,
+[data-theme-style="skeuomorphic"] .mahjong-tile-discarded::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.1));
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+[data-theme-style="skeuomorphic"] button {
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.2));
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+
+/* Retro specific styles */
+[data-theme-style="retro"] * {
+  font-family: var(--retro-font);
+}
+
+[data-theme-style="retro"] .game-board {
+  border: var(--retro-border);
+  box-shadow: var(--retro-shadow);
+}
+
+[data-theme-style="retro"] .mahjong-tile,
+[data-theme-style="retro"] .mahjong-tile-discarded,
+[data-theme-style="retro"] .mahjong-tile-hidden {
+  border: var(--retro-border);
+  box-shadow: var(--retro-shadow);
+  image-rendering: pixelated;
+}
+
+[data-theme-style="retro"] button {
+  border: var(--retro-border);
+  box-shadow: var(--retro-shadow);
+  text-transform: uppercase;
 }
