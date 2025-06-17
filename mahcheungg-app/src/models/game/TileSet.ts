@@ -1,4 +1,4 @@
-import { Tile, TileType } from './Tile';
+import { Tile } from './Tile';
 
 /**
  * Represents the type of a tile set in Mahjong.
