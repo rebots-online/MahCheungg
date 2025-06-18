@@ -31,8 +31,8 @@ MahCheungg is a comprehensive Mahjong gaming platform that offers:
 - **Frontend**: React with TypeScript, Vite, Tailwind CSS
 - **Backend**: Node.js, Express, WebSockets
 - **State Management**: Redux or Context API
-- **Authentication**: JWT-based auth
-- **Payment Processing**: Stripe
+- **Authentication**: Prioritized Web3/Lightning login with federated and email fallbacks
+- **Payment Processing**: Stripe, RevenueCat and BTCPay Server
 - **Communication**: WebRTC for voice/video
 
 ## Development Status
