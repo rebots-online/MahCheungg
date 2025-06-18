@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahcheungg - Multiplayer Mahjong</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            overflow-x: hidden;
+        }
+
+        .tile {
+            width: 60px;
+            height: 80px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 2px 7px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .tile.selected {
+            transform: translateY(-15px);
+            box-shadow: 2px 12px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .tile-character {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .tile-bamboo {
+            font-size: 28px;
+            color: #2e7d32;
+        }
+
+        .tile-circle {
+            font-size: 28px;
+            color: #d32f2f;
+        }
+
+        .tile-wind {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .tile-dragon {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .tile-flower {
+            font-size: 22px;
+            color: #7b1fa2;
+        }
+
+        .tile-season {
+            font-size: 22px;
+            color: #ff8f00;
+        }
+
+        .player-hand {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .discard-pile {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 100px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .wall-container {
+            perspective: 1000px;
+            margin: 30px 0;
+        }
+
+        .wall {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2px;
+            transform-style: preserve-3d;
+        }
+
+        .wall-tile {
+            width: 40px;
+            height: 60px;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            transform: rotateY(20deg);
+        }
+
+        .opponent {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .opponent-hand {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .opponent-tile {
+            width: 30px;
+            height: 50px;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-table {
+            background: linear-gradient(135deg, #4a2545 0%, #1a1a2e 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4a2545;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .riichi-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background-color: #d32f2f;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        .last-discard {
+            border: 3px solid #ffeb3b;
+        }
+
+        .riichi-stick {
+            width: 100%;
+            height: 5px;
+            background-color: #d32f2f;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-yellow-400 mb-2">Mahcheungg</h1>
+            <p class="text-xl text-gray-300">The Ultimate Online Mahjong Experience</p>
+        </header>
+
+        <div class="game-table">
+            <!-- North Player (Top) -->
+            <div class="opponent">
+                <div class="player-info">
+                    <div class="flex items-center gap-3">
+                        <div class="player-avatar">N</div>
+                        <div>
+                            <h3 class="font-bold">North Player</h3>
+                            <p class="text-sm text-gray-400">Waiting...</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">Score: 25,000</p>
+                        <div class="riichi-stick"></div>
+                    </div>
+                </div>
+                <div class="opponent-hand">
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                    <div class="opponent-tile"></div>
+                </div>
+            </div>
+
+            <!-- East and West Players (Left and Right) -->
+            <div class="flex justify-between my-8">
+                <!-- West Player (Left) -->
+                <div class="opponent w-1/4">
+                    <div class="player-info">
+                        <div class="flex items-center gap-3">
+                            <div class="player-avatar">W</div>
+                            <div>
+                                <h3 class="font-bold">West Player</h3>
+                                <p class="text-sm text-gray-400">Thinking...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opponent-hand flex-col items-center">
+                        <div class="flex gap-1 mb-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                        <div class="flex gap-1 mb-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Wall -->
+                <div class="wall-container w-2/4">
+                    <div class="wall">
+                        <!-- This would be dynamically generated in a real game -->
+                        <div class="wall-tile"><span class="tile-character">一</span></div>
+                        <div class="wall-tile"><span class="tile-bamboo">🎋</span></div>
+                        <div class="wall-tile"><span class="tile-circle">🔴</span></div>
+                        <div class="wall-tile"><span class="tile-wind">東</span></div>
+                        <div class="wall-tile"><span class="tile-dragon">中</span></div>
+                        <div class="wall-tile"><span class="tile-flower">🌸</span></div>
+                        <div class="wall-tile"><span class="tile-season">🍁</span></div>
+                        <div class="wall-tile"><span class="tile-character">二</span></div>
+                        <div class="wall-tile"><span class="tile-bamboo">🎋</span></div>
+                        <div class="wall-tile"><span class="tile-circle">🔴</span></div>
+                        <div class="wall-tile"><span class="tile-wind">南</span></div>
+                        <div class="wall-tile"><span class="tile-dragon">發</span></div>
+                        <div class="wall-tile"><span class="tile-flower">🌸</span></div>
+                        <div class="wall-tile"><span class="tile-season">🍁</span></div>
+                    </div>
+                </div>
+
+                <!-- East Player (Right) -->
+                <div class="opponent w-1/4">
+                    <div class="player-info">
+                        <div class="flex items-center gap-3">
+                            <div class="player-avatar">E</div>
+                            <div>
+                                <h3 class="font-bold">East Player</h3>
+                                <p class="text-sm text-gray-400">Ready</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opponent-hand flex-col items-center">
+                        <div class="flex gap-1 mb-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                        <div class="flex gap-1 mb-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                            <div class="opponent-tile"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- South Player (Bottom - Current Player) -->
+            <div class="mt-8">
+                <div class="player-info bg-indigo-900">
+                    <div class="flex items-center gap-3">
+                        <div class="player-avatar bg-yellow-500">S</div>
+                        <div>
+                            <h3 class="font-bold">You (South Player)</h3>
+                            <p class="text-sm text-yellow-300">Your turn!</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">Score: 25,000</p>
+                        <div class="riichi-stick"></div>
+                    </div>
+                </div>
+
+                <!-- Player's Hand -->
+                <div class="player-hand">
+                    <div class="tile">
+                        <span class="tile-character">一</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">一</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">二</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">三</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">四</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">五</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">六</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">七</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">八</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-character">九</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-bamboo">🎋</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-bamboo">🎋</span>
+                    </div>
+                    <div class="tile selected">
+                        <span class="tile-bamboo">🎋</span>
+                    </div>
+                </div>
+
+                <!-- Discard Pile -->
+                <div class="discard-pile">
+                    <div class="tile">
+                        <span class="tile-wind">東</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-wind">南</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-wind">西</span>
+                    </div>
+                    <div class="tile last-discard">
+                        <span class="tile-wind">北</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-dragon">中</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-dragon">發</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-dragon">白</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-circle">🔴</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-circle">🔴</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-circle">🔴</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-flower">🌸</span>
+                    </div>
+                    <div class="tile">
+                        <span class="tile-season">🍁</span>
+                    </div>
+                </div>
+
+                <!-- Player Actions -->
+                <div class="flex justify-center gap-4 mt-6">
+                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-check mr-2"></i>Ron
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-exchange-alt mr-2"></i>Pon
+                    </button>
+                    <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-arrows-alt-h mr-2"></i>Chi
+                    </button>
+                    <button class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-flag mr-2"></i>Riichi
+                    </button>
+                    <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-times mr-2"></i>Discard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="flex justify-center gap-4 mt-8">
+            <button class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-2 px-6 rounded-lg transition">
+                <i class="fas fa-cog mr-2"></i>Settings
+            </button>
+            <button class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-lg transition">
+                <i class="fas fa-question-circle mr-2"></i>Help
+            </button>
+            <button class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition" id="inviteBtn">
+                <i class="fas fa-user-plus mr-2"></i>Invite Friends
+            </button>
+        </div>
+    </div>
+
+    <!-- Invite Friends Modal -->
+    <div class="modal" id="inviteModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-yellow-400">Invite Friends</h2>
+                <button class="text-gray-400 hover:text-white text-2xl" id="closeModal">&times;</button>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-gray-300 mb-3">Share this game link with your friends:</p>
+                <div class="flex">
+                    <input type="text" id="gameLink" value="https://mahcheungg.com/game/abc123"
+                           class="flex-grow bg-gray-800 text-white p-2 rounded-l-lg border border-gray-700" readonly>
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 rounded-r-lg" id="copyLink">
+                        <i class="fas fa-copy mr-2"></i>Copy
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-gray-300 mb-3">Or invite via:</p>
+                <div class="flex gap-3">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg flex-1">
+                        <i class="fab fa-facebook-f mr-2"></i> Facebook
+                    </button>
+                    <button class="bg-blue-400 hover:bg-blue-500 text-white p-3 rounded-lg flex-1">
+                        <i class="fab fa-twitter mr-2"></i> Twitter
+                    </button>
+                    <button class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg flex-1">
+                        <i class="fab fa-google mr-2"></i> Gmail
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple game logic and UI interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select tiles in hand
+            const tiles = document.querySelectorAll('.player-hand .tile');
+            tiles.forEach(tile => {
+                tile.addEventListener('click', function() {
+                    // Deselect all tiles first
+                    tiles.forEach(t => t.classList.remove('selected'));
+                    // Select clicked tile
+                    this.classList.add('selected');
+                });
+            });
+
+            // Modal functionality
+            const inviteBtn = document.getElementById('inviteBtn');
+            const inviteModal = document.getElementById('inviteModal');
+            const closeModal = document.getElementById('closeModal');
+            const copyLink = document.getElementById('copyLink');
+            const gameLink = document.getElementById('gameLink');
+
+            inviteBtn.addEventListener('click', function() {
+                inviteModal.style.display = 'flex';
+            });
+
+            closeModal.addEventListener('click', function() {
+                inviteModal.style.display = 'none';
+            });
+
+            copyLink.addEventListener('click', function() {
+                gameLink.select();
+                document.execCommand('copy');
+                copyLink.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                setTimeout(() => {
+                    copyLink.innerHTML = '<i class="fas fa-copy mr-2"></i>Copy';
+                }, 2000);
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === inviteModal) {
+                    inviteModal.style.display = 'none';
+                }
+            });
+
+            // Simulate game actions
+            setTimeout(() => {
+                const lastDiscard = document.querySelector('.last-discard');
+                lastDiscard.classList.add('pulse');
+
+                // Simulate a player joining
+                setTimeout(() => {
+                    const northStatus = document.querySelector('.opponent:nth-child(1) .text-gray-400');
+                    northStatus.textContent = 'Ready';
+                    northStatus.classList.remove('text-gray-400');
+                    northStatus.classList.add('text-green-400');
+                }, 1500);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
