@@ -1,0 +1,14 @@
+graph TD
+    subgraph Frontend
+        A[mahcheungg-app]
+    end
+    subgraph Backend
+        B[mahcheungg-server]
+        C[mcp-lemonsqueezy]
+        D[mcp-revenuecat]
+        E[routes & server.js]
+    end
+    A <--> B
+    B --> C
+    B --> D
+    B --> E
