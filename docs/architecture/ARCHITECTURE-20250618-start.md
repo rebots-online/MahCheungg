@@ -98,33 +98,6 @@ The teaching module includes:
 - **Authentication**: JWT-based authentication
 - **Payment Processing**: Stripe, RevenueCat, and WebLN for crypto payments
 
-## Codebase Structure
-
-```mermaid
-flowchart TD
-    src-->components
-    src-->contexts
-    src-->pages
-    src-->services
-    src-->game
-    src-->models
-    src-->styles
-
-    services-->MulticastService
-    services-->GameMulticastManager
-    services-->AuthService
-    services-->StripeService
-    services-->RevenueCatService
-
-    subgraph Backend
-        mahcheungg-server:::backend
-    end
-
-    MulticastService<--->P2P[Jami-like P2P Network]
-```
-
-The `mahcheungg-server` directory contains an Express-based API server for authentication and payment processing.
-
 ## Deployment Architecture
 
 ```mermaid
