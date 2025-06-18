@@ -35,11 +35,15 @@ admin.initializeApp({
 const stripeRoutes = require('./routes/stripe');
 const revenueCatRoutes = require('./routes/revenueCat');
 const authRoutes = require('./routes/auth');
+const btcpayRoutes = require('./routes/btcpay');
+const weblnAuthRoutes = require('./routes/weblnAuth');
 
 // Use routes
 app.use('/api', stripeRoutes);
 app.use('/api', revenueCatRoutes);
 app.use('/api', authRoutes);
+app.use('/api', btcpayRoutes);
+app.use('/api', weblnAuthRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
