@@ -208,3 +208,24 @@ All communication is routed through the same interfaces regardless of player typ
 - Advanced teaching modules
 - Statistics and performance tracking
 - Tournament access
+
+## Codebase Overview
+
+```mermaid
+%% Codebase structure
+%% File: docs/architecture/codebase_overview.mermaid
+graph TD
+    subgraph Frontend
+        A[mahcheungg-app]
+    end
+    subgraph Backend
+        B[mahcheungg-server]
+        C[mcp-lemonsqueezy]
+        D[mcp-revenuecat]
+        E[routes & server.js]
+    end
+    A <--> B
+    B --> C
+    B --> D
+    B --> E
+```
