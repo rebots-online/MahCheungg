@@ -96,7 +96,6 @@ The teaching module includes:
 - **Communication & Transport Layer**: Jami for text, voice, and video chat
 - **Game State Transport**: Jami multicast messaging with embedded game state
 - **Authentication**: JWT-based authentication
-- **User Accounts & Profiles**: JSON storage with bcrypt password hashing
 - **Payment Processing**: Stripe, RevenueCat, and WebLN for crypto payments
 
 ## Deployment Architecture
@@ -112,7 +111,6 @@ graph TD
 
     subgraph "Authentication & Payment Services"
         Auth["Auth Server<br/>- JWT<br/>- Subscription Management"]
-        UserDB["User DB<br/>JSON storage"]
         Payment["Payment Services<br/>- Stripe<br/>- RevenueCat<br/>- WebLN"]
     end
 
@@ -128,7 +126,6 @@ graph TD
     Client3 --> Auth
     Client4 --> Auth
 
-    Auth --> UserDB
     Auth --> Payment
 ```
 
