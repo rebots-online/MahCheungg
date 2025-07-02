@@ -1,148 +1,107 @@
 const express = require('express');
-const router = express.Router();
-// Uncomment when Firebase is properly configured
-// const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// Create a new user
-router.post('/auth/register', async (req, res) => {
+const router = express.Router();
+
+const USERS_FILE = path.join(__dirname, '../data/users.json');
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+
+function loadUsers() {
+  if (!fs.existsSync(USERS_FILE)) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+  }
+  const data = fs.readFileSync(USERS_FILE, 'utf8');
+  return JSON.parse(data);
+}
+
+function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+function authenticate(req, res, next) {
+  const token = req.headers.authorization?.split('Bearer ')[1];
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.id;
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+router.post('/auth/register', (req, res) => {
   try {
     const { email, password, displayName } = req.body;
-    
-    // In a real implementation, you would create a user in Firebase
-    // For now, we'll just return a mock response
-    /*
-    const userRecord = await admin.auth().createUser({
-      email,
-      password,
-      displayName,
-    });
-    
-    res.status(200).json({
-      userId: userRecord.uid,
-      email: userRecord.email,
-      displayName: userRecord.displayName,
-    });
-    */
-    
-    // Mock response
-    res.status(200).json({
-      userId: 'user123',
-      email,
-      displayName,
-    });
+    if (!email || !password || !displayName) {
+      return res.status(400).json({ error: 'Missing fields' });
+    }
+    const users = loadUsers();
+    if (users.find(u => u.email === email)) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+    const hashed = bcrypt.hashSync(password, 10);
+    const id = require('crypto').randomUUID();
+    const user = { id, email, password: hashed, displayName, photoURL: '', createdAt: Date.now() };
+    users.push(user);
+    saveUsers(users);
+    const token = jwt.sign({ id: user.id }, JWT_SECRET);
+    res.status(200).json({ userId: user.id, email: user.email, displayName: user.displayName, token });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Login
-router.post('/auth/login', async (req, res) => {
+router.post('/auth/login', (req, res) => {
   try {
     const { email, password } = req.body;
-    
-    // In a real implementation, you would verify the user's credentials
-    // For now, we'll just return a mock response
-    /*
-    // This would be done on the client side with Firebase Auth SDK
-    // Here we're just simulating the server-side verification
-    const userRecord = await admin.auth().getUserByEmail(email);
-    
-    // Create a custom token
-    const token = await admin.auth().createCustomToken(userRecord.uid);
-    
-    res.status(200).json({
-      userId: userRecord.uid,
-      email: userRecord.email,
-      displayName: userRecord.displayName,
-      token,
-    });
-    */
-    
-    // Mock response
-    res.status(200).json({
-      userId: 'user123',
-      email,
-      displayName: 'Test User',
-      token: 'mock-token-123',
-    });
+    const users = loadUsers();
+    const user = users.find(u => u.email === email);
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const token = jwt.sign({ id: user.id }, JWT_SECRET);
+    res.status(200).json({ userId: user.id, email: user.email, displayName: user.displayName, token });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get user profile
-router.get('/auth/profile', async (req, res) => {
+router.get('/auth/profile', authenticate, (req, res) => {
   try {
-    // In a real implementation, you would verify the user's token and get their profile
-    // For now, we'll just return a mock response
-    /*
-    const token = req.headers.authorization?.split('Bearer ')[1];
-    if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    const users = loadUsers();
+    const user = users.find(u => u.id === req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
-    
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const userRecord = await admin.auth().getUser(decodedToken.uid);
-    
-    res.status(200).json({
-      userId: userRecord.uid,
-      email: userRecord.email,
-      displayName: userRecord.displayName,
-      photoURL: userRecord.photoURL,
-    });
-    */
-    
-    // Mock response
-    res.status(200).json({
-      userId: 'user123',
-      email: 'user@example.com',
-      displayName: 'Test User',
-      photoURL: 'https://example.com/avatar.jpg',
-    });
+    const { id, email, displayName, photoURL } = user;
+    res.status(200).json({ userId: id, email, displayName, photoURL });
   } catch (error) {
     console.error('Error getting user profile:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Update user profile
-router.put('/auth/profile', async (req, res) => {
+router.put('/auth/profile', authenticate, (req, res) => {
   try {
     const { displayName, photoURL } = req.body;
-    
-    // In a real implementation, you would verify the user's token and update their profile
-    // For now, we'll just return a mock response
-    /*
-    const token = req.headers.authorization?.split('Bearer ')[1];
-    if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    const users = loadUsers();
+    const user = users.find(u => u.id === req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
-    
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    await admin.auth().updateUser(decodedToken.uid, {
-      displayName,
-      photoURL,
-    });
-    
-    const userRecord = await admin.auth().getUser(decodedToken.uid);
-    
-    res.status(200).json({
-      userId: userRecord.uid,
-      email: userRecord.email,
-      displayName: userRecord.displayName,
-      photoURL: userRecord.photoURL,
-    });
-    */
-    
-    // Mock response
-    res.status(200).json({
-      userId: 'user123',
-      email: 'user@example.com',
-      displayName: displayName || 'Test User',
-      photoURL: photoURL || 'https://example.com/avatar.jpg',
-    });
+    if (displayName) user.displayName = displayName;
+    if (photoURL) user.photoURL = photoURL;
+    saveUsers(users);
+    const { id, email } = user;
+    res.status(200).json({ userId: id, email, displayName: user.displayName, photoURL: user.photoURL });
   } catch (error) {
     console.error('Error updating user profile:', error);
     res.status(500).json({ error: error.message });
