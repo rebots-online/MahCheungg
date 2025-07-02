@@ -27,7 +27,7 @@ class SubscriptionService {
     
     try {
       // Try to get subscription info from RevenueCat first
-      const rcSubscription = await this.revenueCatService.getSubscriberInfo(userId);
+      const rcSubscription = await this.revenueCatService.getCustomerInfo();
       
       if (rcSubscription && rcSubscription.entitlements) {
         // Map RevenueCat entitlements to subscription tier
@@ -78,7 +78,7 @@ class SubscriptionService {
       } else {
         // Use RevenueCat to upgrade
         const entitlement = this.getEntitlementForTier(newTier);
-        await this.revenueCatService.purchasePackage(this.userId, entitlement);
+        await this.revenueCatService.purchasePackage(entitlement);
       }
       
       // Update the current tier

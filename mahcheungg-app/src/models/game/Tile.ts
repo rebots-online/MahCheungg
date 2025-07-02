@@ -24,6 +24,31 @@ export enum DragonType {
   WHITE = 'WHITE'  // 🀆
 }
 
+// Simplified enums used by some UI components
+export enum TileSuit {
+  CHARACTERS = 'CHARACTER',
+  BAMBOO = 'BAMBOO',
+  CIRCLES = 'DOT',
+  WINDS = 'WIND',
+  DRAGONS = 'DRAGON',
+  FLOWERS = 'FLOWER'
+}
+
+export type WindDirection = WindType;
+export enum FlowerType {
+  PLUM = 'PLUM'
+}
+
+export function getTileDisplayName(tile: Tile): string {
+  return tile.unicode;
+}
+
+export interface TileInfo {
+  type: TileType;
+  value: number | WindType | DragonType;
+  unicode: string;
+}
+
 export class Tile {
   private readonly _id: string;
   private readonly _type: TileType;
@@ -62,6 +87,23 @@ export class Tile {
    */
   get value(): number | WindType | DragonType {
     return this._value;
+  }
+
+  get suit(): TileSuit {
+    switch (this._type) {
+      case TileType.CHARACTER:
+        return TileSuit.CHARACTERS;
+      case TileType.BAMBOO:
+        return TileSuit.BAMBOO;
+      case TileType.DOT:
+        return TileSuit.CIRCLES;
+      case TileType.WIND:
+        return TileSuit.WINDS;
+      case TileType.DRAGON:
+        return TileSuit.DRAGONS;
+      default:
+        return TileSuit.FLOWERS;
+    }
   }
 
   /**
