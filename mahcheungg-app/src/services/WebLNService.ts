@@ -1,4 +1,4 @@
-import { getWebln, WebLNProvider } from 'webln';
+import { requestProvider, WebLNProvider } from 'webln';
 
 interface InvoiceResponse {
   paymentRequest: string;
@@ -28,8 +28,7 @@ class WebLNService {
 
   public async initialize(): Promise<boolean> {
     try {
-      this.webln = await getWebln();
-      await this.webln.enable();
+      this.webln = await requestProvider();
       this.available = true;
       
       // Detect wallet provider
@@ -141,7 +140,7 @@ class WebLNService {
       if (this.walletProvider === 'alby') {
         // Alby-specific balance request
         try {
-          const response = await this.webln.request('getBalance');
+          const response = await (this.webln as any).request('getBalance');
           return response.balance;
         } catch (e) {
           console.log('Alby balance request failed:', e);
@@ -150,7 +149,7 @@ class WebLNService {
       } else if (this.walletProvider === 'blink') {
         // Blink.sv might have a different method
         try {
-          const response = await this.webln.request('getBalance');
+          const response = await (this.webln as any).request('getBalance');
           return response.balance;
         } catch (e) {
           console.log('Blink balance request failed:', e);
@@ -173,7 +172,7 @@ class WebLNService {
 
     try {
       // This is an Alby-specific method
-      const response = await this.webln.request('getAlbyUserInfo');
+      const response = await (this.webln as any).request('getAlbyUserInfo');
       return response;
     } catch (error) {
       console.error('Failed to get Alby user info:', error);
@@ -189,7 +188,7 @@ class WebLNService {
 
     try {
       // This would be a Blink.sv-specific method if they have one
-      const response = await this.webln.request('getUserInfo');
+      const response = await (this.webln as any).request('getUserInfo');
       return response;
     } catch (error) {
       console.error('Failed to get Blink user info:', error);

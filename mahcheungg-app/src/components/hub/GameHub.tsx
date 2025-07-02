@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import DepositModal from '../payment/DepositModal';
 import AuthModal from '../auth/AuthModal';
-import { getWebln } from 'webln';
+import { requestProvider } from 'webln';
 import { AIDifficulty } from '../../models/player/AIPlayer';
 
 interface GameHubProps {
@@ -27,7 +27,7 @@ const GameHub: React.FC<GameHubProps> = ({ onStartGame }) => {
   useEffect(() => {
     const checkWebln = async () => {
       try {
-        const webln = await getWebln();
+        const webln = await requestProvider();
         setWeblnAvailable(!!webln);
       } catch (error) {
         console.error('WebLN not available:', error);

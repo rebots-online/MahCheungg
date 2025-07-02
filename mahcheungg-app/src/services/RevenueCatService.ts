@@ -1,4 +1,4 @@
-import Purchases, { CustomerInfo, PurchasesConfiguration } from '@revenuecat/purchases-js';
+import { Purchases, CustomerInfo } from '@revenuecat/purchases-js';
 
 // Subscription tiers
 export enum SubscriptionTier {
@@ -28,20 +28,14 @@ class RevenueCatService {
     if (this.initialized) return;
 
     try {
-      const configuration: PurchasesConfiguration = {
-        apiKey: REVENUECAT_API_KEY,
-        appUserID: userId,
-        observerMode: false // Set to true if you're using another payment system alongside RevenueCat
-      };
-
-      await Purchases.configure(configuration);
+      await Purchases.configure(REVENUECAT_API_KEY, userId);
       this.initialized = true;
       
       // Get initial customer info
       this.customerInfo = await Purchases.getCustomerInfo();
       
       // Set up customer info listener
-      Purchases.addCustomerInfoUpdateListener((info) => {
+      Purchases.addCustomerInfoUpdateListener((info: CustomerInfo) => {
         this.customerInfo = info;
       });
       
@@ -90,7 +84,7 @@ class RevenueCatService {
       }
       
       // Find the package
-      const pkg = offerings.current.availablePackages.find(p => p.identifier === packageId);
+      const pkg = offerings.current.availablePackages.find((p: any) => p.identifier === packageId);
       
       if (!pkg) {
         throw new Error(`Package ${packageId} not found`);
