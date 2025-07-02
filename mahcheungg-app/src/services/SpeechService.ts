@@ -1,6 +1,9 @@
 // This service handles speech recognition and synthesis
 // In a real implementation, you would integrate with actual TTS APIs like Orpheus or Kokoro
 
+declare var webkitSpeechRecognition: any;
+declare var SpeechRecognition: any;
+
 class SpeechService {
   private static instance: SpeechService;
   private recognition: SpeechRecognition | null = null;
